@@ -72,6 +72,10 @@ directiveModule.directive('ngDropdownMultiselect', ['$filter', '$document', '$co
 			var $dropdownTrigger = $element.children()[0];
 
 			$scope.toggleDropdown = function() {
+        if ($scope.settings.alwaysOpen) {
+          $scope.open = true;
+          return;
+        }
 				if ($scope.open) {
 					$scope.close()
 				} else { $scope.open = true }
@@ -112,6 +116,7 @@ directiveModule.directive('ngDropdownMultiselect', ['$filter', '$document', '$co
 			};
 
 			$scope.settings = {
+        alwaysOpen: false,
 				dynamicTitle: true,
 				scrollable: false,
 				scrollableHeight: '300px',
@@ -173,8 +178,10 @@ directiveModule.directive('ngDropdownMultiselect', ['$filter', '$document', '$co
 			});
 
 			$scope.close = function() {
-				$scope.open = false;
-				$scope.externalEvents.onClose();
+        if (!$scope.settings.alwaysOpen) {
+				  $scope.open = false;
+				  $scope.externalEvents.onClose();
+        }
 			}
 
 			$scope.selectCurrentGroup = function(currentGroup) {
@@ -192,6 +199,10 @@ directiveModule.directive('ngDropdownMultiselect', ['$filter', '$document', '$co
 			angular.extend($scope.settings, $scope.extraSettings || []);
 			angular.extend($scope.externalEvents, $scope.events || []);
 			angular.extend($scope.texts, $scope.translationTexts);
+
+      if ($scope.settings.alwaysOpen) {
+        $scope.open = true;
+      }
 
 			$scope.singleSelection = $scope.settings.selectionLimit === 1;
 
